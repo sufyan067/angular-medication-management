@@ -1,0 +1,211 @@
+:host {
+    display: block;
+    padding: 40px 80px;
+    background: #eef3f8;
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+}
+
+/* Page Header */
+.page-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #080809;
+    font-size: 15px;
+}
+
+/* Section Cards */
+.section-card {
+    margin-bottom: 30px;
+    padding: 25px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.counter {
+    font-size: 14px;
+    color: #3b82f6;
+    margin-left: 8px;
+}
+
+/* Form Field Spacing */
+mat-form-field {
+    width: 100%;
+    margin-bottom: 22px;
+}
+
+/* Two Column Layout */
+.header-row,
+.dosage-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+/* Medication Card */
+.medication-card {
+    padding: 20px;
+    border-radius: 12px;
+    background: #f9fafb;
+    border-left: 5px solid #3b82f6;
+    margin-bottom: 25px;
+}
+
+/* Buttons */
+.footer-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+/* Error Spacing Fix */
+mat-error {
+    font-size: 12px;
+    margin-top: 6px;
+    display: block;
+}
+
+.section-card:hover {
+    transform: translateY(-2px);
+    transition: 0.2s ease;
+}
+
+.unsaved-badge {
+    background: #f59e0b;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.last-saved {
+    font-size: 13px;
+    color: #16a34a;
+    margin-bottom: 10px;
+}
+
+.footer-buttons {
+    background-color: #80d6f0;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+/* Footer Layout */
+
+.footer-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+   
+}
+
+.footer-left {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.footer-center {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.footer-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Highlight submit button */
+.footer-right button {
+    font-size: 15px;
+    padding: 10px 22px;
+}
+
+/* Footer background */
+.footer-container {
+    background-color: #e6f3ff;
+    padding: 15px;
+    border-radius: 14px;
+    margin-bottom: 5px;
+}
+
+.dirty-indicator {
+    color: #f59e0b;
+    margin-left: 4px;
+    font-weight: bold;
+}
+
+.dirty-indicator {
+    color: #f59e0b;
+    margin-left: 4px;
+    font-weight: bold;
+}
+
+.form-error-summary {
+    background: #fdecea;
+    color: #b71c1c;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.demo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-top: 10px;
+}
+
+/* Default discard button (enabled) */
+.discard-btn {
+    border-radius: 20px;
+    color: #ef4444;
+    /* red text */
+    border: 1px solid #ef4444;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Disabled state */
+.discard-btn:disabled {
+
+    color: #93aae0 !important;
+    /* grey text */
+    border-color: #375f9a !important;
+    background: #f3f4f6 !important;
+    /* light grey background */
+    cursor: not-allowed;
+    opacity: 1 !important;
+    /* remove material fade */
+}
+.mat-optgroup-label {
+  font-weight: 600;
+  color: #1e3a8a;
+}

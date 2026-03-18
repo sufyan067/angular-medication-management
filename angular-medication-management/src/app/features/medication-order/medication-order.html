@@ -1,0 +1,341 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+    <!-- ================= HEADER ================= -->
+    <div class="page-header">
+        <h1>Medication Order Management Form</h1>
+        <p class="subtitle"> Create and manage medication orders for patients</p>
+    </div>
+    <!-- FORM LEVEL ERROR -->
+    @if(form.invalid && isSubmitAttempted) {
+    <div class="form-error-summary">
+        Please correct the highlighted errors before submitting.
+    </div>
+    }
+    @if (hasUnsavedChanges) {
+    <div class="unsaved-badge">
+        Unsaved Changes
+    </div>
+    }
+    @if (lastSavedTime) {
+    <div class="last-saved">
+        Last saved: {{ lastSavedTime }}
+    </div>
+    }
+    <mat-card class="section-card">
+        <h2 class="section-title">Patient Information</h2>
+        <div formGroupName="patientInfo" class="header-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Patient ID
+                    @if (form.get('patientInfo.patientId')?.dirty) {
+                    <span class="dirty-indicator">•</span>
+                    }
+                </mat-label>
+                <input matInput formControlName="patientId" />
+                <mat-error
+                    *ngIf="form.get('patientInfo.patientId')?.invalid && form.get('patientInfo.patientId')?.touched">
+                    This field is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Order Date
+                    @if (form.get('patientInfo.orderDate')?.dirty) {
+                    <span class="dirty-indicator">•</span>
+                    }
+                </mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="orderDate" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error
+                    *ngIf="form.get('patientInfo.orderDate')?.invalid && form.get('patientInfo.orderDate')?.touched">
+                    This field is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </mat-card>
+
+    <!-- ================= PRESCRIBING INFO ================= -->
+    <mat-card class="section-card">
+        <h2 class="section-title">Prescribing Information</h2>
+        <div formGroupName="prescribingInfo">
+
+            <mat-form-field appearance="outline">
+
+                <mat-label>
+                    Physician
+                    @if (form.get('prescribingInfo.physician')?.dirty) {
+                    <span class="dirty-indicator">•</span>
+                    }
+                </mat-label>
+
+                <mat-select formControlName="physician">
+
+                    @for (group of physicians; track $index) {
+
+                    <mat-optgroup [label]="group.label">
+
+                        @for (doc of group.options; track $index) {
+                        <mat-option [value]="doc.name">
+                            {{ doc.name }}
+                        </mat-option>
+                        }
+
+                    </mat-optgroup>
+
+                    }
+
+                </mat-select>
+
+                <!-- Required Error -->
+                @if (
+                form.get('prescribingInfo.physician')?.hasError('required') &&
+                form.get('prescribingInfo.physician')?.touched
+                ) {
+                <mat-error>
+                    Physician is required
+                </mat-error>
+                }
+
+                <!-- Doctor Required -->
+                @if (
+                form.get('prescribingInfo.physician')?.hasError('doctorRequired') &&
+                form.get('prescribingInfo.physician')?.touched
+                ) {
+                <mat-error>
+                    Only doctors (Dr.) are allowed for Chemotherapy
+                </mat-error>
+                }
+
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Therapy Type
+                    @if (form.get('prescribingInfo.therapyType')?.dirty) {
+                    <span class="dirty-indicator">*</span>
+                    }
+                </mat-label>
+                <mat-select formControlName="therapyType">
+                    @for (type of therapyTypes; track $index) {
+                    <mat-option [value]="type">{{ type }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            @if (form.get('prescribingInfo.therapyType')?.value === 'Chemotherapy') {
+            <mat-form-field appearance="outline">
+                <mat-label>Diagnosis
+                    @if (form.get('prescribingInfo.diagnosis')?.dirty) {
+                    <span class="dirty-indicator">•</span>
+                    }
+                </mat-label>
+                <mat-select formControlName="diagnosis">
+                    @for (diag of chemotherapyDiagnoses; track $index) {
+                    <mat-option [value]="diag">
+                        {{ diag }}
+                    </mat-option>
+                    }
+                </mat-select>
+
+                <mat-error
+                    *ngIf="form.get('prescribingInfo.diagnosis')?.invalid && form.get('prescribingInfo.diagnosis')?.touched">
+                    Diagnosis is required for Chemotherapy
+                </mat-error> </mat-form-field>
+            }
+
+
+        </div>
+    </mat-card>
+
+
+    <!-- ================= MEDICATIONS ================= -->
+    <mat-card class="section-card">
+        <h2 class="section-title"> Medications <span class="counter">{{ medications.length }}/10</span> </h2>
+        <div formArrayName="medications">
+
+            @for (med of medications.controls; track $index; let i = $index) {
+
+            <mat-card class="medication-card" [formGroupName]="i">
+
+                <h3>Medication {{ i + 1 }}</h3>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Drug Name Search
+                        @if (med.get('drugName')?.dirty) {
+                        <span class="dirty-indicator">•</span>
+                        }
+                    </mat-label>
+                    <input matInput formControlName="drugName" [matAutocomplete]="auto" />
+                    <mat-autocomplete #auto="matAutocomplete">
+                        @if (medications.hasError('duplicateDrug') && medications.touched) {
+                        <div style="color: red; margin-bottom: 10px;">
+                            Duplicate drug detected:{{ medications.errors?.['duplicateDrug']?.drugName }}
+                        </div>
+                        }
+                        @for (drug of filteredDrugStreams.get(med.value.id) | async;track $index) {
+                        <mat-option [value]="drug"> {{ drug }} </mat-option>}
+                    </mat-autocomplete>
+                    <!-- Required -->
+                    <mat-error *ngIf="med.get('drugName')?.hasError('required') && med.get('drugName')?.touched">
+                        This field is required
+                    </mat-error>
+
+                    <!-- Invalid selection -->
+                    <mat-error *ngIf="med.get('drugName')?.hasError('invalidDrug') && med.get('drugName')?.touched">
+                        Please select a valid drug from the list
+                    </mat-error>
+                    <mat-error *ngIf="med.get('drugName')?.hasError('drugExists')">
+                        Drug {{ med.get('drugName')?.errors?.['drugExists']?.name }} already exists (ID:
+                        {{ med.get('drugName')?.errors?.['drugExists']?.id }})
+                    </mat-error>
+                </mat-form-field>
+
+                <div formGroupName="dosage" class="dosage-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Dosage Value
+                            @if (med.get('dosage.value')?.dirty) {
+                            <span class="dirty-indicator">•</span>
+                            }
+                        </mat-label>
+                        <input matInput type="number" formControlName="value" />
+                        @if (med.get('dosage.value')?.touched) {
+                        @if (med.get('dosage.value')?.hasError('required')) {
+                        <mat-error>This field is required</mat-error>}
+                        @else if (med.get('dosage.value')?.hasError('dosageRange')) {
+                        <mat-error> Must be between 0.1 and 5000</mat-error>}
+                        }
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Unit
+                            @if (med.get('dosage.unit')?.dirty) {
+                            <span class="dirty-indicator">•</span>
+                            }
+                        </mat-label>
+                        <mat-select formControlName="unit">
+                            @for (unit of dosageUnits; track $index) {
+                            <mat-option [value]="unit">{{ unit }}</mat-option>
+                            }
+                        </mat-select>
+                        <mat-error
+                            *ngIf="med.get('dosage.unit')?.hasError('required') && med.get('dosage.unit')?.touched">
+                            This field is required
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Route
+                        @if (med.get('route')?.dirty) {
+                        <span class="dirty-indicator">•</span>
+                        }
+                    </mat-label>
+                    <mat-select formControlName="route">
+                        @for (r of routes; track $index) {
+                        <mat-option [value]="r">{{ r }}</mat-option>
+                        }
+                    </mat-select>
+                    <mat-error *ngIf="med.get('dosage.unit')?.hasError('required')  && med.get('dosage.unit')?.touched">
+                        This field is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Frequency
+                        @if (med.get('frequency')?.dirty) {
+                        <span class="dirty-indicator">•</span>
+                        }
+                    </mat-label>
+                    <mat-select formControlName="frequency">
+                        @for (f of frequencies; track $index) {
+                        <mat-option [value]="f">{{ f }}</mat-option>
+                        }
+                    </mat-select>
+                    <mat-error *ngIf="med.get('route')?.hasError('required') && med.get('route')?.touched">
+                        This field is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Instructions
+                        @if (med.get('instructions')?.dirty) {
+                        <span class="dirty-indicator">•</span>
+                        }
+                    </mat-label>
+                    <textarea matInput formControlName="instructions"></textarea>
+                    <!-- Required -->
+                    <mat-error
+                        *ngIf="med.get('instructions')?.hasError('required') && med.get('instructions')?.touched">
+                        This field is required
+                    </mat-error>
+
+                    <!-- Min length -->
+                    <mat-error
+                        *ngIf="med.get('instructions')?.hasError('minlength') && med.get('instructions')?.touched">
+                        Minimum 20 characters required
+                    </mat-error>
+                </mat-form-field>
+
+                <button mat-raised-button color="warn" type="button" (click)="removeMedication(i)"
+                    [disabled]="medications.length === 1">
+                    Remove
+                </button>
+
+            </mat-card>
+
+            }
+
+        </div>
+
+        <button mat-raised-button color="primary" type="button" (click)="addMedication()"
+            [disabled]="isViewOnly || medications.length >= 10 || form.invalid">
+            Add Medication
+        </button>
+
+    </mat-card>
+
+    <!-- ================= FOOTER ================= -->
+    <div class="footer-container">
+
+        <!-- LEFT SIDE: VIEW MODE -->
+        <div class="footer-left">
+            <button mat-stroked-button type="button" (click)="toggleViewOnly()">
+                {{ isViewOnly ? 'Exit View Mode' : 'View Only Mode' }}
+            </button>
+        </div>
+
+        <!-- CENTER: FORM ACTIONS -->
+        <div class="footer-center">
+
+            <button mat-raised-button color="accent" type="button" (click)="saveDraft()">
+                Save Draft
+            </button>
+
+            <button mat-raised-button color="accent" type="button" (click)="restoreDraft()">
+                Restore Draft
+            </button>
+
+            <button mat-raised-button color="accent" type="button" (click)="clearAll()">
+                Clear All
+            </button>
+
+            <button mat-stroked-button class="discard-btn" type="button" (click)="discardChanges()"
+                [disabled]="!form.dirty">
+                Discard Changes
+            </button>
+
+        </div>
+
+        <!-- RIGHT SIDE: SUBMIT -->
+        <div class="footer-right">
+            <button mat-raised-button color="primary" type="submit" [disabled]="isViewOnly">
+                Submit Order
+            </button>
+        </div>
+
+
+    </div>
+    <button mat-stroked-button type="button" class="demo" (click)="demoGetRawValue()">
+        Demo getRawValue()
+    </button>
+
+</form>
