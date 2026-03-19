@@ -55,3 +55,62 @@ Through this project, I strengthened my understanding of:
 ---
 
 ### ✔ Nested FormGroups
+Medication Order
+├── Patient Info
+├── Prescribing Info
+└── Medications (FormArray)
+
+
+Medication Order
+├── Patient Info
+├── Prescribing Info
+└── Medications (FormArray)
+---
+
+### ✔ Custom Validators
+
+- Dosage range validation
+- Duplicate drug validation
+- Physician validation (Doctor required for Chemotherapy)
+- Async validation (drug existence check)
+
+---
+
+## ⚙ Conditional Validation
+
+### Therapy Type Logic
+
+| Therapy Type | Behavior |
+|-------------|---------|
+Chemotherapy | Diagnosis required, Physician must be Doctor |
+Standard / Supportive | Diagnosis optional |
+
+---
+
+### Route-Based Logic
+
+| Route | Behavior |
+|------|---------|
+IV | Instructions required |
+Other | Instructions optional |
+
+---
+
+## 🔁 patchValue vs setValue
+
+### patchValue (Edit Mode)
+- Updates partial data
+- Safe for incomplete objects
+
+```ts
+form.patchValue({
+  patientInfo: { patientId: '123' }
+});
+
+💾 Auto-Save Draft Feature
+
+Automatically saves form after 5 seconds
+
+Uses localStorage
+
+Restores form state on reload
