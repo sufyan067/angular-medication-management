@@ -11,7 +11,7 @@ The application demonstrates advanced form handling techniques including dynamic
 
 A live preview of this project is available on StackBlitz:
 
-👉 **[Open Project on StackBlitz](https://stackblitz.com/~/github.com/sufyan067/angular-medication-management)**
+👉 **[Open Project on StackBlitz](https://angularmedicationmanagement-1qxh--4200--8669d46c.local-credentialless.webcontainer.io/)**
 
 You can explore and test all features directly in the browser without installing anything.
 
