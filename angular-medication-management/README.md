@@ -138,11 +138,11 @@ form.patchValue({
 
 - Applies custom errors dynamically
 
-ts```
+```ts
 control.setErrors({
   drugExists: { name: 'Aspirin', id: 101 }
 });
-``
+```
 ## 🎨 UI/UX Features
 
 - Angular Material design system
