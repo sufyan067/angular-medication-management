@@ -106,12 +106,69 @@ Other | Instructions optional |
 form.patchValue({
   patientInfo: { patientId: '123' }
 });
-ts```
-
+```
 ## 💾 Auto-Save Draft Feature
 
-Automatically saves form after 5 seconds
+- Automatically saves form after 5 seconds
 
-Uses localStorage
+- Uses localStorage
 
-Restores form state on reload
+- Restores form state on reload
+
+## 🔄 Form State Management Features:
+
+- View Only Mode (disable form)
+
+- Dirty state tracking
+
+- Unsaved changes indicator
+
+- Discard changes functionality
+
+- Restore draft functionality
+
+
+## ⚠ Async Validation (setErrors)
+
+- Simulated API validation:
+
+- Checks duplicate drugs
+
+- Uses 2-second delay
+
+- Applies custom errors dynamically
+
+ts```
+control.setErrors({
+  drugExists: { name: 'Aspirin', id: 101 }
+});
+``
+## 🎨 UI/UX Features
+
+- Angular Material design system
+
+- Dynamic validation messages
+
+- Dirty field indicators (•)
+
+- Section-based layout
+
+- Validation summary before submission
+
+- Professional button grouping
+
+- Responsive design
+
+## 🧪 How to Test Features
+
+- Add multiple medications
+
+- Try duplicate drug selection
+
+- Select IV route → instructions required
+
+- Switch therapy type → validation changes
+
+- Test auto-save and restore
+
+- Toggle View Mode
